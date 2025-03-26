@@ -30,9 +30,10 @@ class dbDAO:
         self.cursor.close()
         self.connection.close()
 
+# TO DO: perhaps include an id in the table
     def create(self, values):
         cursor = self.getCursor()
-        sql = "INSERT INTO elec (name, age) VALUES (%s, %s)"
+        sql = "INSERT INTO elec.unit (year, month, unit, cost_code) VALUES (%s, %s, %s, %s)"
         cursor.execute(sql, values)
         self.connection.commit()
         newid = cursor.lastrowid
@@ -47,16 +48,26 @@ class dbDAO:
         self.closeAll()
         return results
     
-    def findbyid(self, id):
-        cursor = self.getCursor()       
-        sql = "SELECT * FROM elec where id = %s"
-        cursor.execute(sql, (id,))
+    def findbyid(self, year, month):
+        cursor = self.getCursor()
+     
+        sql = "SELECT * FROM elec.unit WHERE year = %s AND month = %s"
+        print(f"Debug: year={year}, type={type(year)}")
+        print(f"Debug: month={month}, type={type(month)}")
+
+        cursor.execute(sql, (year, month))
         results = cursor.fetchall()
         self.closeAll()
         
         return results
     
-    def update(self, id):
+    def update_unit(self, values):
+        cursor = self.getCursor()  # Get the database cursor
+        sql = "update elec.unit set unit=%s, cost_code=%s where year=%s and month=%s"
+        print(f"Debug: SQL={sql}, values={values}")  # Debugging
+        cursor.execute(sql, values)
+        self.connection.commit()
+        self.closeAll()
         return "update"
 
     def delete(self, id):

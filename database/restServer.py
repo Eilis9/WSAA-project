@@ -2,14 +2,12 @@ from flask import Flask, url_for, request, redirect, abort
 from daoClass import dbDAO
 
 
-
 app = Flask(__name__, static_url_path='', static_folder= 'staticpages')
 
 @app.route('/')
 def index():
     
-    return "hello there"
-
+    return "Electricity Unit Recording and Database! - Eilis Donohue"
 
 
 @app.route('/elec', methods=['GET'])
@@ -18,9 +16,14 @@ def getall():
     print("debug")
     return str(results)
 
-@app.route('/elec/<int:id>', methods=['GET'])
-def findbyid(id):
-    results = dbDAO.findbyid(id)
+# find an entry based on year and month query parameters
+@app.route('/elec/find', methods=['GET'])
+def findbyid():
+    year = request.args.get('year', type=int)  
+    month = request.args.get('month', type=int)  
+    print(f"Debug: year={year}, type={type(year)}")
+    print(f"Debug: month={month}, type={type(month)}")
+    results = dbDAO.findbyid(year, month)
     return results
 
 #create
@@ -34,17 +37,26 @@ def create():
 
     return f"create {jsonstring}"
 
-# update
-@app.route('/elec/<int:id>', methods=['PUT'])
-def update(id):
+# update an entry based on year and month
+@app.route('/elec', methods=['PUT'])
+def update_unit():
     # read json from the body
     jsonstring = request.json
-    return f"update {id} {jsonstring}"
+    # Extract values from the jsonstring to put in correct order
+    year = jsonstring.get('year')
+    month = jsonstring.get('month')
+    unit = jsonstring.get('unit')
+    cost_code = jsonstring.get('cost_code')
+    values= [unit, cost_code, year, month]
+    dbDAO.update_unit(values) 
+    return f"update {jsonstring}"
 
-# delete
-@app.route('/elec/<int:id>', methods=['DELETE'])
-def delete(id):
-    return f"delete {id}"
+# delete based on year and month
+@app.route('/elec', methods=['DELETE'])
+def delete():
+    year = request.args.get('year', type=int)  # Get 'year' from query parameters
+    month = request.args.get('month', type=int)  # Get 'month' from query parameters
+    return f"delete entry for {year} {month}"
 
 if __name__ == '__main__':
     app.run(debug=True)
