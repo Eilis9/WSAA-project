@@ -1,9 +1,9 @@
-from flask import Flask, url_for, request, redirect, abort
+from flask import Flask, url_for, request, redirect, abort, jsonify
 from daoClass import dbDAO
-
+from flask_cors import CORS
 
 app = Flask(__name__, static_url_path='', static_folder= 'staticpages')
-
+CORS(app)
 @app.route('/')
 def index():
     
@@ -12,9 +12,10 @@ def index():
 
 @app.route('/elec', methods=['GET'])
 def getall():
+    #table = 'unit'
     results = dbDAO.getAll()
-    print("debug")
-    return str(results)
+    print("flask", results)
+    return jsonify(results)
 
 # find an entry based on year and month query parameters
 @app.route('/elec/find', methods=['GET'])
@@ -56,7 +57,7 @@ def update_unit():
 def delete():
     year = request.args.get('year', type=int)  # Get 'year' from query parameters
     month = request.args.get('month', type=int)  # Get 'month' from query parameters
-    return f"delete entry for {year} {month}"
+    return f"deleted entry for {year} {month}"
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -42,23 +42,28 @@ class dbDAO:
     
     def getAll(self):
         cursor = self.getCursor()
-        sql = "SELECT * FROM elec.unit"
-        cursor.execute(sql)
-        results = cursor.fetchall()
+        # elec unit table
+        sql_1 = "SELECT * FROM elec.unit ORDER BY year DESC, month DESC"
+        cursor.execute(sql_1)
+        results_1 = cursor.fetchall()
+        # Get column names from the cursor description
+        column_names = [desc[0] for desc in cursor.description]
+        # Convert each row into a dictionary
+        json_results = [dict(zip(column_names, row)) for row in results_1]
+        # cost table
+        #sql_2 = "SELECT * FROM elec.cost"
+        #cursor.execute(sql_2)
+        #results_2 = cursor.fetchall()
         self.closeAll()
-        return results
+        #return f"unit table {results_1} cost table {results_2}"
+        return json_results
     
     def findbyid(self, year, month):
-        cursor = self.getCursor()
-     
+        cursor = self.getCursor()  
         sql = "SELECT * FROM elec.unit WHERE year = %s AND month = %s"
-        print(f"Debug: year={year}, type={type(year)}")
-        print(f"Debug: month={month}, type={type(month)}")
-
         cursor.execute(sql, (year, month))
         results = cursor.fetchall()
-        self.closeAll()
-        
+        self.closeAll()        
         return results
     
     def update_unit(self, values):
@@ -69,9 +74,14 @@ class dbDAO:
         self.connection.commit()
         self.closeAll()
         return "update"
-
-    def delete(self, id):
-        return "delete"
+    
+    # Delete an entry based on year and month
+    def delete(self, year, month):
+        cursor = self.getCursor()  
+        sql = "DELETE from elec.unit * WHERE year = %s AND month = %s"
+        cursor.execute(sql, (year, month))
+        self.closeAll()        
+        return f"deleted entry for {year}, {month}"
         
 
 dbDAO = dbDAO()

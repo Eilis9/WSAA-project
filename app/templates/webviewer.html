@@ -1,0 +1,69 @@
+<html>
+    <head>
+        <title>View books</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+
+    </head>
+    
+    <body>
+        <h1>Electricity Readings</h1>
+        <div><button id="button-showCreate" onclick="showCreate()">Record a month</button><br/><br/></div>
+        <div>
+            <table border="1" id="elecTable">
+                <tr>
+                        <th>Year</th>
+                        <th>Month</th>
+                        <th>Units</th>
+                        <th>Cost Code</th>
+                        <th>Update</th>
+                        <th>Delete</th>
+                </tr>
+
+            </table>
+        </div>          
+    </body>
+
+    <script>
+        function addReadingToTable(reading){
+          var tableElement = document.getElementById('elecTable')
+          var rowElement = tableElement.insertRow(-1)
+          var cell1 = rowElement.insertCell(0);
+          cell1.innerHTML = reading.year
+          var cell2 = rowElement.insertCell(1);
+          cell2.innerHTML = reading.month
+          var cell3 = rowElement.insertCell(2);
+          cell3.innerHTML = reading.unit
+          var cell4 = rowElement.insertCell(3);
+          cell4.innerHTML = reading.cost_code
+
+
+        }
+         
+
+
+
+         function getAllAjax(){
+         console.log("in get all")
+         $.ajax({
+         "url": "http://127.0.0.1:5000/elec?table=unit",
+          "method":"GET",
+           "data":"",
+           "dataType": "JSON",
+           "success":function(result){
+              
+              for (reading of result){
+                console.log(reading);
+                addReadingToTable(reading);
+              }                   
+              },
+              "error":function(xhr,status,error){
+               console.log("error: "+status+" msg:"+error);
+                 }
+              });          
+              }
+          
+          
+              getAllAjax();    
+     </script>
+
+</html>
