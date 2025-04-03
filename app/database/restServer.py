@@ -32,11 +32,11 @@ def findbyid():
 def create():
     # read json from the body
     jsonstring = request.json
-    #print(request.json)
+    print(request.json)
     values = list(jsonstring.values()) 
     dbDAO.create(values)
 
-    return f"create {jsonstring}"
+    return jsonstring
 
 # update an entry based on year and month
 @app.route('/elec', methods=['PUT'])

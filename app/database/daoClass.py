@@ -43,7 +43,7 @@ class dbDAO:
     def getAll(self):
         cursor = self.getCursor()
         # elec unit table
-        sql_1 = "SELECT * FROM elec.unit ORDER BY year DESC, month DESC"
+        sql_1 = "SELECT * FROM elec.unit ORDER BY year ASC, month ASC"
         cursor.execute(sql_1)
         results_1 = cursor.fetchall()
         # Get column names from the cursor description
