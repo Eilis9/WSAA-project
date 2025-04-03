@@ -28,7 +28,7 @@
         <div id="createUpdateForm" style="display:none">
           <!-- spans are like divs but do not go onto a new line -->
           <h2><span id="createLabel">Create a</span> <span id="updateLabel">Update this</span> Reading</h2>
-
+          id <input type="hidden" name="id"><br/>
           Year <input type="number" name="year"><br/>
           Month <input type="number" name="month"><br/>
           Units <input type="number" name="unit"><br/>
@@ -44,9 +44,12 @@
 
     <script>
         function addReadingToTable(reading){
-          console.log("adding reading to table---", reading)
+          //console.log("adding reading to table---", reading)
           var tableBody = document.querySelector('#elecTable tbody')
           var rowElement = tableBody.insertRow(0)
+          var id = reading.id
+          rowElement.setAttribute("id", id)
+
           var cell1 = rowElement.insertCell(0);
           cell1.innerHTML = reading.year
           var cell2 = rowElement.insertCell(1);
@@ -56,9 +59,9 @@
           var cell4 = rowElement.insertCell(3);
           cell4.innerHTML = reading.cost_code
           var cell5 = rowElement.insertCell(4);
-          cell5.innerHTML = `<button onclick="updateRow(${reading.id})">Update</button>`;
+          cell5.innerHTML = `<button onclick="updateRow(this)">Update</button>`;
           var cell6 = rowElement.insertCell(5);
-          cell6.innerHTML = `<button onclick="deleteRow(${reading.id})">Delete</button>`;
+          cell6.innerHTML = `<button onclick="doDelete(this)">Delete</button>`;
         }
         
         function showCreate(){
@@ -79,17 +82,31 @@
             console.log(reading)
             createReading(reading, function (result) {
             console.log("Reading created successfully:", result);
-
-        // Add the newly created reading to the table
-            addReadingToTable(result);
-
-        // Clear the form and switch views
+            // Add the newly created reading to the table
+      
+            // Clear the form and switch views
             clearForm();
             showViewall();
         });
 
         }
 
+        function doDelete(buttonElement){
+            console.log("in delete")
+            console.log(buttonElement)
+            var tableElement = document.querySelector('#elecTable tbody')
+            var rowElement = buttonElement.parentElement.parentElement
+            // I need the id
+            id = rowElement.getAttribute("id")
+            console.log("deleting "+id)
+            deleteReading(id, doNothing)
+            index = rowElement.rowIndex
+            tableElement.deleteRow(index-1);
+
+        }
+
+
+   
 
         function getReadingFromForm(){
             var form = document.getElementById('createUpdateForm')
@@ -121,7 +138,10 @@
             form.querySelector('input[name="cost_code"]').value=''
         }
 
-
+        function doNothing(result){
+            console.log("nothing:"+result)
+            return "done"
+        }
         function getAllAjax(){
         console.log("in get all")
         $.ajax({
@@ -151,8 +171,11 @@
                 "dataType": "JSON",
                 contentType: "application/json; charset=utf-8",
                 "success":function(result){
+                    console.log("the reading.id", result.id)
+                    reading.id = result.id
+                    addReadingToTable(reading);
+                    console.log(reading)
                     console.log(result);
-
                     callback(result)  
                 },
                 "error":function(xhr,status,error){
@@ -160,6 +183,23 @@
                 }
             })};
           
+
+            function deleteReading(id){
+            $.ajax({
+                "url": "http://127.0.0.1:5000/elec/"+encodeURI(id),
+                "method":"DELETE",
+                "data":"",
+                "dataType": "JSON",
+                contentType: "application/json; charset=utf-8",
+                "success":function(result){
+                    console.log(result);
+                
+                },
+                "error":function(xhr,status,error){
+                    console.log("error: "+status+" msg:"+error);
+                }
+            });
+          }
           getAllAjax();    
      
          </script>

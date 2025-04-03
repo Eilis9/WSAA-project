@@ -32,11 +32,16 @@ def findbyid():
 def create():
     # read json from the body
     jsonstring = request.json
-    print(request.json)
-    values = list(jsonstring.values()) 
-    dbDAO.create(values)
+    reading = {}
+    reading["year"] = jsonstring["year"]
+    reading["month"] = jsonstring["month"]
+    reading["unit"] = jsonstring["unit"]
+    reading["cost_code"] = jsonstring["cost_code"]
 
-    return jsonstring
+    print("server", request.json)
+
+
+    return jsonify(dbDAO.create(reading))
 
 # update an entry based on year and month
 @app.route('/elec', methods=['PUT'])
@@ -52,12 +57,11 @@ def update_unit():
     dbDAO.update_unit(values) 
     return f"update {jsonstring}"
 
-# delete based on year and month
-@app.route('/elec', methods=['DELETE'])
-def delete():
-    year = request.args.get('year', type=int)  # Get 'year' from query parameters
-    month = request.args.get('month', type=int)  # Get 'month' from query parameters
-    return f"deleted entry for {year} {month}"
+# delete based on id
+@app.route('/elec/<int:id>', methods=['DELETE'])
+def delete(id):
+    
+    return jsonify(dbDAO.delete(id))
 
 if __name__ == '__main__':
     app.run(debug=True)
