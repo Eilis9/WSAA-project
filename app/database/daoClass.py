@@ -68,14 +68,18 @@ class dbDAO:
         self.closeAll()        
         return results
     
-    def update_unit(self, values):
+    def update_unit(self, id, reading):
+        
         cursor = self.getCursor()  # Get the database cursor
-        sql = "update elec.unit set unit=%s, cost_code=%s where year=%s and month=%s"
+        
+        sql = "update elec.unit set year=%s, month=%s, unit=%s, cost_code=%s where id=%s"
+        values = (reading.get("year"), reading.get("month"), reading.get("unit"), reading.get("cost_code"), id)
         print(f"Debug: SQL={sql}, values={values}")  # Debugging
-        cursor.execute(sql, values)
+        
+        result = cursor.execute(sql, values)
         self.connection.commit()
         self.closeAll()
-        return "update"
+        return result
     
     # Delete an entry based on id
     def delete(self, id):

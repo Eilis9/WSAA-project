@@ -12,6 +12,7 @@
             <table class="table table-striped" id="elecTable">
               <thead>
                 <tr>
+                        <th style="display:none">Id</th>
                         <th>Year</th>
                         <th>Month</th>
                         <th>Units</th>
@@ -28,7 +29,7 @@
         <div id="createUpdateForm" style="display:none">
           <!-- spans are like divs but do not go onto a new line -->
           <h2><span id="createLabel">Create a</span> <span id="updateLabel">Update this</span> Reading</h2>
-          id <input type="hidden" name="id"><br/>
+          id <input type="number" name="id"><br/>
           Year <input type="number" name="year"><br/>
           Month <input type="number" name="month"><br/>
           Units <input type="number" name="unit"><br/>
@@ -59,7 +60,7 @@
           var cell4 = rowElement.insertCell(3);
           cell4.innerHTML = reading.cost_code
           var cell5 = rowElement.insertCell(4);
-          cell5.innerHTML = `<button onclick="updateRow(this)">Update</button>`;
+          cell5.innerHTML = `<button onclick="showUpdate(this)">Update</button>`;
           var cell6 = rowElement.insertCell(5);
           cell6.innerHTML = `<button onclick="doDelete(this)">Delete</button>`;
         }
@@ -74,10 +75,30 @@
 
             document.getElementById("button-showCreate").style.display = "none"
             document.getElementById("elecTable").style.display = "none"
+            // Disable the id field
+            document.querySelector('input[name="id"]').disabled = true;
+            
         }
         
+        function showUpdate(buttonElement){
+            document.getElementById("createUpdateForm").style.display = "block"          
+            document.getElementById("button-doCreate").style.display = "none"
+            document.getElementById("button-doUpdate").style.display = "block"
+            document.getElementById("createLabel").style.display = "none"
+            document.getElementById("updateLabel").style.display = "inline"
+            document.getElementById("button-showCreate").style.display = "none"
+            document.getElementById("elecTable").style.display = "none"
+            rowElement= buttonElement.parentElement.parentElement
+            console.log("rowElement in showupdate", rowElement)
+            console.log("rowElement in showUpdate", rowElement)
+            reading = getReadingFromRow(rowElement)
+            console.log("reading in showUpdate", reading)
+            //console.log(book)
+            populateFormWithReading(reading)           
+        }
+
         function doCreate(){
-           console.log("creating a reading")
+            console.log("creating a reading")
             reading = getReadingFromForm()
             console.log(reading)
             createReading(reading, function (result) {
@@ -88,8 +109,20 @@
             clearForm();
             showViewall();
         });
-
         }
+        
+        function doUpdate(){
+            reading = getReadingFromForm()
+            console.log("reading in doUpdate", reading)
+            var rowElement = document.getElementById(reading.id)
+            setReadingInRow(rowElement, reading)
+            updateReading(reading)
+            showViewall()
+            clearForm() 
+        }
+
+
+
 
         function doDelete(buttonElement){
             console.log("in delete")
@@ -106,12 +139,27 @@
         }
 
 
-   
+        function getReadingFromRow(rowElement){
+            var reading ={}
+            var id = rowElement.getAttribute("id");
+            
+            //reading.id  = rowElement.cells[0].firstChild.textContent
+            console.log("Id", reading.id)
+            reading.id = id
+            reading.year = rowElement.cells[0].firstChild.textContent
+            reading.month = rowElement.cells[1].firstChild.textContent
+            reading.unit = rowElement.cells[2].firstChild.textContent
+            reading.cost_code = rowElement.cells[3].firstChild.textContent
+
+            return reading
+        }
+
 
         function getReadingFromForm(){
             var form = document.getElementById('createUpdateForm')
 
        	    var reading = {}
+            reading.id = form.querySelector('input[name="id"]').value
         	  reading.year = form.querySelector('input[name="year"]').value
         	  reading.month = form.querySelector('input[name="month"]').value
         	  reading.unit = form.querySelector('input[name="unit"]').value
@@ -119,6 +167,30 @@
         	//console.log(JSON.stringify(book))
             return reading
         }
+
+
+        function setReadingInRow(rowElement, reading){
+            console.log("setting reading in row", reading)
+            rowElement.setAttribute("id", reading.id)
+            rowElement.cells[0].firstChild.textContent= reading.year
+            rowElement.cells[1].firstChild.textContent= reading.month
+            rowElement.cells[2].firstChild.textContent= reading.unit
+            rowElement.cells[3].firstChild.textContent= reading.cost_code
+
+          }
+
+        function populateFormWithReading(reading){
+       		var form = document.getElementById('createUpdateForm')
+        	form.querySelector('input[name="id"]').disabled = true
+
+       		form.querySelector('input[name="id"]').value  = reading.id
+       		form.querySelector('input[name="year"]').value= reading.year
+        	form.querySelector('input[name="month"]').value= reading.month
+        	form.querySelector('input[name="unit"]').value= reading.unit
+          form.querySelector('input[name="cost_code"]').value= reading.cost_code
+
+    }
+
 
         function showViewall(){
             document.getElementById("createUpdateForm").style.display = "none"
@@ -200,6 +272,28 @@
                 }
             });
           }
+     
+          function updateReading(reading, callback){
+            console.log("reading id in updateReading", reading.id);
+            console.log("reading id in updateReading", reading);
+
+            $.ajax({
+                "url": "http://127.0.0.1:5000/elec/"+encodeURI(reading.id),
+                "method":"PUT",
+                "data":JSON.stringify(reading),
+                "dataType": "JSON",
+                contentType: "application/json; charset=utf-8",
+                "success":function(result){
+                   // console.log(result);
+                    callback(result)   
+                },
+                "error":function(xhr,status,error){
+                    console.log("error: "+status+" msg:"+error);
+                }
+            });
+        }
+
+
           getAllAjax();    
      
          </script>

@@ -33,6 +33,7 @@ def create():
     # read json from the body
     jsonstring = request.json
     reading = {}
+    #TODO : put in conditions here based on blanks
     reading["year"] = jsonstring["year"]
     reading["month"] = jsonstring["month"]
     reading["unit"] = jsonstring["unit"]
@@ -43,19 +44,22 @@ def create():
 
     return jsonify(dbDAO.create(reading))
 
-# update an entry based on year and month
-@app.route('/elec', methods=['PUT'])
-def update_unit():
+# update an entry based on id
+@app.route('/elec/<int:id>', methods=['PUT'])
+def update_unit(id):
     # read json from the body
+    print("jsonstring in flask", request.json)
     jsonstring = request.json
+    reading = {}
+    print("reading in server", jsonstring)
     # Extract values from the jsonstring to put in correct order
-    year = jsonstring.get('year')
-    month = jsonstring.get('month')
-    unit = jsonstring.get('unit')
-    cost_code = jsonstring.get('cost_code')
-    values= [unit, cost_code, year, month]
-    dbDAO.update_unit(values) 
-    return f"update {jsonstring}"
+    reading['id'] = id
+    reading["year"] = jsonstring["year"]
+    reading["month"] = jsonstring["month"]
+    reading["unit"] = jsonstring["unit"]
+    reading["cost_code"] = jsonstring["cost_code"]
+    print("flask", reading)
+    return jsonify(dbDAO.update_unit(id, reading)) 
 
 # delete based on id
 @app.route('/elec/<int:id>', methods=['DELETE'])
