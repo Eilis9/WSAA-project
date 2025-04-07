@@ -1,13 +1,14 @@
 <html>
     <head>
-        <title>View books</title>
+        <title>View Readings</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
       </head>
     
     <body>
         <h1>Electricity Readings</h1>
-        <div><button id="button-showCreate" onclick="showCreate()">Record a month</button><br/><br/></div>
+        <div><button id="button-showCreate" onclick="showCreate()">Record a month</button><br/></div>
+        <div><button id="button-showCostCodes" onclick="document.location='cost_codes.html'">Edit cost codes</button><br/><br/></div>
         <div>
             <table class="table table-striped" id="elecTable">
               <thead>
@@ -17,6 +18,9 @@
                         <th>Month</th>
                         <th>Units</th>
                         <th>Cost Code</th>
+                        <th>Supplier</th>                        
+                        <th>Standing Charge</th>
+                        <th>Unit cost</th>
                         <th>Update</th>
                         <th>Delete</th>
                 </tr>
@@ -60,9 +64,15 @@
           var cell4 = rowElement.insertCell(3);
           cell4.innerHTML = reading.cost_code
           var cell5 = rowElement.insertCell(4);
-          cell5.innerHTML = `<button onclick="showUpdate(this)">Update</button>`;
+          cell5.innerHTML = reading.supplier
           var cell6 = rowElement.insertCell(5);
-          cell6.innerHTML = `<button onclick="doDelete(this)">Delete</button>`;
+          cell6.innerHTML = reading.s_charge
+          var cell7 = rowElement.insertCell(6);
+          cell7.innerHTML = reading.unit_cost
+          var cell8 = rowElement.insertCell(7);
+          cell8.innerHTML = `<button onclick="showUpdate(this)">Update</button>`;
+          var cell9 = rowElement.insertCell(8);
+          cell9.innerHTML = `<button onclick="doDelete(this)">Delete</button>`;
         }
         
         function showCreate(){
@@ -72,12 +82,11 @@
             document.getElementById("button-doUpdate").style.display = "none"
             document.getElementById("createLabel").style.display = "inline"
             document.getElementById("updateLabel").style.display = "none"
-
             document.getElementById("button-showCreate").style.display = "none"
             document.getElementById("elecTable").style.display = "none"
             // Disable the id field
             document.querySelector('input[name="id"]').disabled = true;
-            
+
         }
         
         function showUpdate(buttonElement){
@@ -246,6 +255,8 @@
                     console.log("the reading.id", result.id)
                     reading.id = result.id
                     addReadingToTable(reading);
+                    // Needs to refresh to get the cost_code info from the database
+                    getAllAjax();
                     console.log(reading)
                     console.log(result);
                     callback(result)  

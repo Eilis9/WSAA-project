@@ -5,10 +5,11 @@ from flask_cors import CORS
 app = Flask(__name__, static_url_path='', static_folder= 'staticpages')
 CORS(app)
 @app.route('/')
-def index():
-    
+def index():   
     return "Electricity Unit Recording and Database! - Eilis Donohue"
-
+@app.route('/index')
+def index_page():
+    return render_template('index.html')
 
 @app.route('/elec', methods=['GET'])
 def getall():
