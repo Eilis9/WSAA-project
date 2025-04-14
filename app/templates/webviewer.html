@@ -6,12 +6,13 @@
       </head>
     
     <body>
+        <div class="container pt-3">
         <h1>Electricity Readings</h1>
-        <div><button id="button-showCreate" onclick="showCreate()">Record a month</button><br/></div>
-        <div><button id="button-showCostCodes" onclick="document.location='cost_codes.html'">Edit cost codes</button><br/><br/></div>
-        <div>
-            <table class="table table-striped" id="elecTable">
-              <thead>
+        <div><button type="button" class="btn btn-primary" id="button-showCreate" onclick="showCreate()">Record a month</button><br/></div>
+        </div>
+        <div class="container pt-3">
+            <table class="table table-hover table-sm" id="elecTable">
+              <thead class="table-dark">
                 <tr>
                         <th style="display:none">Id</th>
                         <th>Year</th>
@@ -30,18 +31,21 @@
               </tbody>
             </table>
         </div>
-        <div id="createUpdateForm" style="display:none">
+        <div class="container">
           <!-- spans are like divs but do not go onto a new line -->
-          <h2><span id="createLabel">Create a</span> <span id="updateLabel">Update this</span> Reading</h2>
-          id <input type="number" name="id"><br/>
-          Year <input type="number" name="year"><br/>
-          Month <input type="number" name="month"><br/>
-          Units <input type="number" name="unit"><br/>
-          Cost code <input type="text" name="cost_code"><br/>
-         
-          <span><button id="button-doCreate" onclick="doCreate()">Create</button></span>
-          <span><button id="button-doUpdate" onclick="doUpdate()">Update</button></span>
-           <!-- "display:none" will make it hidden-->
+        <h2><span id="createLabel">Create a</span> <span id="updateLabel">Update this</span> Reading</h2>
+        <form id="createUpdateForm" style="display:none">
+        <div class="col-4">
+        ID: <input type="number" class="form-control" name="id"><br/>
+        Year: <input type="number" class="form-control" name="year"><br/>
+        Month: <input type="number" class="form-control" name="month"><br/>
+        Units: <input type="number" class="form-control" name="unit"><br/>
+        Cost code: <input type="text" class="form-control" name="cost_code"><br/>
+        </div>
+        </form> 
+        <span><button type="button" class="btn btn-dark" id="button-doCreate" onclick="doCreate()">Create</button></span>
+        <span><button type="button" class="btn" id="button-doUpdate" onclick="doUpdate()">Update</button></span>
+        <!-- "display:none" will make it hidden-->
 
 
       </div>          
@@ -70,9 +74,9 @@
           var cell7 = rowElement.insertCell(6);
           cell7.innerHTML = reading.unit_cost
           var cell8 = rowElement.insertCell(7);
-          cell8.innerHTML = `<button onclick="showUpdate(this)">Update</button>`;
+          cell8.innerHTML = `<button type="button" class="btn btn-outline-warning" onclick="showUpdate(this)">Update</button>`;
           var cell9 = rowElement.insertCell(8);
-          cell9.innerHTML = `<button onclick="doDelete(this)">Delete</button>`;
+          cell9.innerHTML = `<button type="button" class="btn btn-outline-danger" onclick="doDelete(this)">Delete</button>`;
         }
         
         function showCreate(){
