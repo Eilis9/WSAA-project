@@ -6,14 +6,14 @@
       </head>
     
     <body>
-        <div class="container pt-3">
+        <div class="container pt-3" id="header" >
         <h1>Electricity Readings</h1>
         <div><button type="button" class="btn btn-primary" id="button-showCreate" onclick="showCreate()">Record a month</button><br/></div>
         </div>
         <div class="container pt-3">
-            <table class="table table-hover table-sm" id="elecTable">
-              <thead class="table-dark">
-                <tr>
+            <table style="width: auto" class="table table-hover" id="elecTable">
+              <thead style="width: auto" class="table-dark">
+                <tr style="width: auto">
                         <th style="display:none">Id</th>
                         <th>Year</th>
                         <th>Month</th>
@@ -26,17 +26,23 @@
                         <th>Delete</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody style="width: auto">
  
               </tbody>
             </table>
+
         </div>
-        <div class="container">
+        <div class="container" id="createUpdateContainer" style="display:none">
           <!-- spans are like divs but do not go onto a new line -->
         <h2><span id="createLabel">Create a</span> <span id="updateLabel">Update this</span> Reading</h2>
+        <button type="button" class="btn btn-secondary" id="button-showViewall" onclick="showViewall()">Back to view all</button><br/><br/>
+        <p id="createInstruction">Fill in the form below to create a new reading</p>
+        <p id="updateInstruction">Amend values to update the reading</p>    
         <form id="createUpdateForm" style="display:none">
-        <div class="col-4">
+        <div class="col-4" id="idField">
         ID: <input type="number" class="form-control" name="id"><br/>
+        </div>
+        <div class="col-4">
         Year: <input type="number" class="form-control" name="year"><br/>
         Month: <input type="number" class="form-control" name="month"><br/>
         Units: <input type="number" class="form-control" name="unit"><br/>
@@ -44,11 +50,9 @@
         </div>
         </form> 
         <span><button type="button" class="btn btn-dark" id="button-doCreate" onclick="doCreate()">Create</button></span>
-        <span><button type="button" class="btn" id="button-doUpdate" onclick="doUpdate()">Update</button></span>
+        <span><button type="button" class="btn btn-dark" id="button-doUpdate" onclick="doUpdate()">Update</button></span>
         <!-- "display:none" will make it hidden-->
-
-
-      </div>          
+        </div>          
     </body>
 
     <script>
@@ -80,20 +84,30 @@
         }
         
         function showCreate(){
+            document.getElementById("header").style.display = "none"
+            document.getElementById("updateInstruction").style.display = "none"
+            document.getElementById("createInstruction").style.display = "block"
+            document.getElementById("createUpdateContainer").style.display = "block"
             document.getElementById("createUpdateForm").style.display = "block"
-            
             document.getElementById("button-doCreate").style.display = "block"
             document.getElementById("button-doUpdate").style.display = "none"
             document.getElementById("createLabel").style.display = "inline"
             document.getElementById("updateLabel").style.display = "none"
             document.getElementById("button-showCreate").style.display = "none"
             document.getElementById("elecTable").style.display = "none"
-            // Disable the id field
+            // Disable / don't show the id field for the create form
             document.querySelector('input[name="id"]').disabled = true;
+            document.querySelector('input[name="id"]').style.display = "none";
+            document.getElementById("idField").style.display = "none";
+          
 
         }
         
         function showUpdate(buttonElement){
+            document.getElementById("header").style.display = "none"
+            document.getElementById("createInstruction").style.display = "none"
+            document.getElementById("updateInstruction").style.display = "block"
+            document.getElementById("createUpdateContainer").style.display = "block"
             document.getElementById("createUpdateForm").style.display = "block"          
             document.getElementById("button-doCreate").style.display = "none"
             document.getElementById("button-doUpdate").style.display = "block"
@@ -200,14 +214,14 @@
        		form.querySelector('input[name="year"]').value= reading.year
         	form.querySelector('input[name="month"]').value= reading.month
         	form.querySelector('input[name="unit"]').value= reading.unit
-          form.querySelector('input[name="cost_code"]').value= reading.cost_code
+            form.querySelector('input[name="cost_code"]').value= reading.cost_code
 
     }
 
 
         function showViewall(){
             document.getElementById("createUpdateForm").style.display = "none"
-           
+            document.getElementById("header").style.display = "block"
             document.getElementById("button-showCreate").style.display = "block"
             console.log("showing view all")
             document.getElementById("elecTable").style.display = "block"
