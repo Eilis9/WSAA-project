@@ -48,7 +48,8 @@ class dbDAO:
         # sql_1 = "SELECT * FROM elec.unit ORDER BY year ASC, month ASC"
         # Joins the data from the 2 database tables to get the reading and cost info
         sql_1= """
-        SELECT elec.unit.id, elec.unit.year, elec.unit.month, elec.unit.unit, elec.cost.* from elec.unit
+        SELECT elec.unit.id, elec.unit.year, elec.unit.month, elec.unit.unit, 
+        elec.cost.cost_code, elec.cost.supplier, round(elec.cost.s_charge, 3) as s_charge, round(elec.cost.unit_cost, 3) as unit_cost from elec.unit
         INNER JOIN elec.cost 
         ON elec.cost.cost_code = elec.unit.cost_code
         ORDER by year ASC, month ASC;"""

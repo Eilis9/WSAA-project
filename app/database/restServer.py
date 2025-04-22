@@ -1,4 +1,4 @@
-from flask import Flask, url_for, request, redirect, abort, jsonify
+from flask import Flask, url_for, request, redirect, abort, jsonify, render_template
 from daoClass import dbDAO
 from flask_cors import CORS
 
