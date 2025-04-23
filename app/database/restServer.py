@@ -2,14 +2,39 @@ from flask import Flask, url_for, request, redirect, abort, jsonify, render_temp
 from daoClass import dbDAO
 from flask_cors import CORS
 
-app = Flask(__name__, static_url_path='', static_folder= 'staticpages')
+app = Flask(__name__, static_url_path='', static_folder= 'staticpages', template_folder='../templates')
 CORS(app)
-@app.route('/')
-def index():   
-    return "Electricity Unit Recording and Database! - Eilis Donohue"
-@app.route('/index')
-def index_page():
-    return render_template('index.html')
+
+
+#@app.route('/')
+#def index():   
+#    return "Electricity Unit Recording and Database! - Eilis Donohue"
+
+#@app.route('/index')
+#def index_page():
+#   return render_template('index.html')
+
+
+
+@app.route('/chart/<int:year>')
+def chart_page(year):
+    print(year)
+    results = dbDAO.findbyyear(year)
+
+    labels = []
+    dict = {1:'Jan', 2:'Feb', 3:'Mar', 4:'Apr', 5:'May', 6:'Jun', 7:'Jul', 8:'Aug', 9:'Sep', 10:'Oct', 11:'Nov', 12:'Dec'}
+    data = []
+    for result in results:
+        labels.append(dict.get(result[1]))
+        data.append(result[0])
+
+    print("type", type(data[0]))
+    
+    return render_template('chart.html', labels=labels, data=data)
+    #return labels
+
+
+
 
 @app.route('/elec', methods=['GET'])
 def getall():

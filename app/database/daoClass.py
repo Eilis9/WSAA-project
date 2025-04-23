@@ -75,6 +75,15 @@ class dbDAO:
         self.closeAll()        
         return results
     
+    def findbyyear(self, year):
+        cursor = self.getCursor()  
+        sql = "SELECT unit, month FROM elec.unit WHERE year = %s"
+        cursor.execute(sql, (year,))
+        results = cursor.fetchall()
+        self.closeAll()        
+        return results
+
+
     def update_unit(self, id, reading):
         
         cursor = self.getCursor()  # Get the database cursor
