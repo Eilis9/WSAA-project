@@ -2,9 +2,25 @@
 <html lang="en">
 <head>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <title>Chart.js Example</title>
 </head>
+
 <body>
+
+  <div>
+    <label for="yearDropdown">Select Year:</label>
+    <select id="yearDropdown" onchange="updateChart()">
+        <option value="2023">2023</option>
+        <option value="2023">2023</option>
+        <option value="2022">2022</option>
+        <option value="2021">2021</option>
+        <!-- Add more years as needed -->
+    </select>
+  </div>
+
+
+
     <div style="height: 50vh; width: 50%;">
         <canvas id="myChart"></canvas>
     </div>
@@ -34,5 +50,29 @@
             document.getElementById('myChart'),
             config
         );
+        
+        
+        function updateChart() {
+            const selectedYear = document.getElementById('yearDropdown').value;
+            console.log("Selected year:", selectedYear);
+          $.ajax({
+              url: `/chart_data/${selectedYear}`, 
+               method: "GET",
+             dataType: "JSON",
+             success: function(response) {
+            console.log("Data received:", response);
+
+            // Update the chart with new data
+            myChart.data.labels = response.labels;
+            myChart.data.datasets[0].data = response.data;
+            myChart.update(); // Refresh the chart
+        },
+        error: function(xhr, status, error) {
+            console.error("Error fetching data:", status, error);
+            }
+           });
+        }
+
+
     </script>
 </body>

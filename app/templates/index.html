@@ -18,9 +18,14 @@
     Cost codes are used to calculate the cost of electricity per month.
   </p>
   <p>View / add / delete / modify the electricity readings here: </p>
-  <div><button class="btn btn-primary" id="button-showWebviewer" onclick="document.location='webviewer.html'">View readings</button><br/><br/></div>
-  <p>View the cost codes here: </p>
-  <div><button class="btn btn-primary" id="button-showCostviewer" onclick="document.location='cost_codes.html'">View cost codes</button><br/><br/></div>
+  <a href="/webviewer" class="btn btn-primary" id="button-showWebviewer">Launch Webviewer</a>
+  
+
+  <h2>Using the API</h2>
+  <p>To use the API, you can make GET requests to the following endpoints:</p>
+  <ul>
+    <li><a href="/elec/units">Get all readings</a></li>
+    <li><a href="/elec/cost_codes">Get all cost codes</a></li>
 
 </div>
 

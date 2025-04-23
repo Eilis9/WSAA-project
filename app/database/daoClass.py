@@ -42,6 +42,7 @@ class dbDAO:
         self.closeAll()
         return newid
     
+    # gets all units
     def getAll(self):
         cursor = self.getCursor()
         # elec unit table
@@ -66,6 +67,36 @@ class dbDAO:
         self.closeAll()
         #return f"unit table {results_1} cost table {results_2}"
         return json_results
+    
+    # Gets all units
+    
+
+
+    # gets all cost codes
+    def getAllCostCode(self):
+        cursor = self.getCursor()
+        # elec unit table
+        # sql_1 = "SELECT * FROM elec.unit ORDER BY year ASC, month ASC"
+        # Joins the data from the 2 database tables to get the reading and cost info
+        sql_1= """
+        SELECT elec.cost.cost_code, round(elec.cost.s_charge, 3) as s_charge, round(elec.cost.unit_cost, 3) as unit_cost from elec.unit
+        INNER JOIN elec.cost 
+        ON elec.cost.cost_code = elec.unit.cost_code
+        ORDER by year ASC, month ASC;"""
+        cursor.execute(sql_1)
+        results_1 = cursor.fetchall()
+        # Get column names from the cursor description
+        column_names = [desc[0] for desc in cursor.description]
+        # Convert each row into a dictionary
+        json_results = [dict(zip(column_names, row)) for row in results_1]
+        # cost table
+        #sql_2 = "SELECT * FROM elec.cost"
+        #cursor.execute(sql_2)
+        #results_2 = cursor.fetchall()
+        self.closeAll()
+        #return f"unit table {results_1} cost table {results_2}"
+        return json_results
+
     
     def findbyid(self, year, month):
         cursor = self.getCursor()  
