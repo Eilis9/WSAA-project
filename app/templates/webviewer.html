@@ -1,9 +1,11 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
     <head>
-        <title>View Readings</title>
+        <title>Cost Codes</title>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-      </head>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    </head>
     
     <body>
 
@@ -11,7 +13,7 @@
             <div class="container-fluid">
               <a class="navbar-brand" href="#">Logo</a>
               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
-                <span class="navbar-toggler-icon"></span>
+              <span class="navbar-toggler-icon"></span>
               </button>
               <div class="collapse navbar-collapse" id="collapsibleNavbar">
                 <ul class="navbar-nav">
@@ -22,14 +24,19 @@
                     <a class="nav-link" href="/webviewer">Readings</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="cost_codes.html">Cost Codes</a>
+                    <a class="nav-link" href="/costcodes">Cost Codes</a>
                   </li>  
+                  <li class="nav-item">
+                    <a class="nav-link" href="#" onclick="showCreate()">Record a month</a>
+                  </li>  
+
+
                   <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Dropdown</a>
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Analysis</a>
                     <ul class="dropdown-menu">
-                      <li><a class="dropdown-item" href="#">Link</a></li>
-                      <li><a class="dropdown-item" href="#">Another link</a></li>
-                      <li><a class="dropdown-item" href="#">A third link</a></li>
+                      <li><a class="dropdown-item" href="/chart">Plot Usage</a></li>
+                      <li><a class="dropdown-item" href="/webviewer/analysis">Calculate Cost</a></li>
+                      
                     </ul>
                   </li>
                 </ul>
@@ -40,7 +47,7 @@
 
 
     <div class="container pt-3" id="header">
-        <h1>Electricity Readings</h1><button type="button" class="btn btn-primary float-right" id="button-showCreate" onclick="showCreate()">Record a month</button>
+        <h1>Electricity Readings</h1>
         
     </div>
 
@@ -71,7 +78,6 @@
         <div class="container" id="createUpdateContainer" style="display:none">
           <!-- spans are like divs but do not go onto a new line -->
         <h2><span id="createLabel">Create a</span> <span id="updateLabel">Update this</span> Reading</h2>
-        <button type="button" class="btn btn-secondary" id="button-showViewall" onclick="showViewall()">Back to view all</button><br/><br/>
         <p id="createInstruction">Fill in the form below to create a new reading</p>
         <p id="updateInstruction">Amend values to update the reading</p>    
         <form id="createUpdateForm" style="display:none">
@@ -92,6 +98,9 @@
     </body>
 
     <script>
+        // This function is called when the page loads
+        getAllAjax();
+
         function addReadingToTable(reading){
           //console.log("adding reading to table---", reading)
           var tableBody = document.querySelector('#elecTable tbody')
@@ -129,7 +138,7 @@
             document.getElementById("button-doUpdate").style.display = "none"
             document.getElementById("createLabel").style.display = "inline"
             document.getElementById("updateLabel").style.display = "none"
-            document.getElementById("button-showCreate").style.display = "none"
+            //document.getElementById("button-showCreate").style.display = "none"
             document.getElementById("elecTable").style.display = "none"
             // Disable / don't show the id field for the create form
             document.querySelector('input[name="id"]').disabled = true;
@@ -149,7 +158,7 @@
             document.getElementById("button-doUpdate").style.display = "block"
             document.getElementById("createLabel").style.display = "none"
             document.getElementById("updateLabel").style.display = "inline"
-            document.getElementById("button-showCreate").style.display = "none"
+           // document.getElementById("button-showCreate").style.display = "none"
             document.getElementById("elecTable").style.display = "none"
             rowElement= buttonElement.parentElement.parentElement
             console.log("rowElement in showupdate", rowElement)
@@ -184,9 +193,6 @@
             clearForm() 
         }
 
-
-
-
         function doDelete(buttonElement){
             console.log("in delete")
             console.log(buttonElement)
@@ -200,7 +206,6 @@
             tableElement.deleteRow(index-1);
 
         }
-
 
         function getReadingFromRow(rowElement){
             var reading ={}
@@ -258,7 +263,7 @@
         function showViewall(){
             document.getElementById("createUpdateForm").style.display = "none"
             document.getElementById("header").style.display = "block"
-            document.getElementById("button-showCreate").style.display = "block"
+           // document.getElementById("button-showCreate").style.display = "block"
             console.log("showing view all")
             document.getElementById("elecTable").style.display = "block"
         }
@@ -277,10 +282,11 @@
             console.log("nothing:"+result)
             return "done"
         }
+
         function getAllAjax(){
         console.log("in get all")
         $.ajax({
-            "url": "http://127.0.0.1:5000/elec",
+            "url": "/webviewer/showall",
             "method":"GET",
             "data":"",
             "dataType": "JSON",
@@ -359,7 +365,7 @@
         }
 
 
-          getAllAjax();    
+
      
          </script>
 

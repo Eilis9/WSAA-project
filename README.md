@@ -22,6 +22,6 @@ https://bootstrap-table.com/docs/extensions/filter-control/
 
 https://cpryan.github.io/blog/2023/tables/
 
-Get Bootstrap. Navbar [Online] Available: https://www.w3schools.com/bootstrap5/bootstrap_navbar.php
+W3 Schools. Navbar [Online] Available: https://www.w3schools.com/bootstrap5/bootstrap_navbar.php
 
 Geeks for Geeks. Chart.js [Online] Available: https://www.geeksforgeeks.org/how-to-add-graphs-to-flask-apps/
