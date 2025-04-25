@@ -173,10 +173,11 @@ def deleteCostCode(cost_code):
     return jsonify(dbDAO.deleteCostCode(cost_code))
 
 # Calculates the cost of electricity for a given time period
-@app.route('/elec/analysis/cost', methods=['GET'])
+@app.route('/elec/analysis/cost', methods=['POST'])
 def calcCost():
     # read json from the body
     jsonstring = request.json
+    print("jsonstr", jsonstring)
     reading = {}
     #TODO : put in conditions here based on blanks
     reading["year_start"] = jsonstring["year_start"]
@@ -184,8 +185,14 @@ def calcCost():
     reading["year_end"] = jsonstring["year_end"]
     reading["month_end"] = jsonstring["month_end"]
     
-    results = dbDAO.calcCost(reading)
-    return jsonify(results)
+    print("server", reading)
+    print("jsonstring in flask", request.json)
+    result = dbDAO.calcCost(reading)
+    for r in result:
+        if 'total_cost' in r:
+            total_cost = (r['total_cost'])
+
+    return jsonify({'total_cost': total_cost})
 
 
 if __name__ == '__main__':

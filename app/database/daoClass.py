@@ -178,14 +178,20 @@ class dbDAO:
         self.closeAll()        
         return f"deleted entry for {cost_code}"
         
-    def calcCost(self, year_start, month_start, year_end, month_end):
+    def calcCost(self, reading):
         cursor = self.getCursor()
         sql = """SELECT elec.unit.year, elec.unit.month, elec.unit.unit, 
-        elec.cost.cost_code, elec.cost.s_charge, elec.cost.unit_cost from elec.unit
+        elec.cost.cost_code, elec.cost.s_charge, elec.cost.unit_cost, elec.cost.vat_pc from elec.unit
         INNER JOIN elec.cost 
         ON elec.cost.cost_code = elec.unit.cost_code
         WHERE (elec.unit.year>%s OR (elec.unit.year = %s and month>=%s ))
         AND (elec.unit.year<%s OR (elec.unit.year = %s and month<=%s ))"""
+        year_start = reading.get("year_start")
+        print("in dao", year_start)
+        month_start = reading.get("month_start")
+        year_end = reading.get("year_end")
+        month_end = reading.get("month_end")
+
         values = (year_start, year_start, month_start, year_end, year_end, month_end)
         cursor.execute(sql, values)
         results = cursor.fetchall()
@@ -199,8 +205,7 @@ class dbDAO:
             7: 31, 8: 31, 9: 30, 10: 31, 11: 30, 12: 31
         }
         for entry in json_results:
-            entry["cost"] = round((entry["unit"] * entry["unit_cost"] + 
-                            entry["s_charge"]*month_days_dict.value(entry["month"]))*(1+entry["vat_pc"]/100), 2)
+            entry["cost"] = round((entry["unit"] * entry["unit_cost"] + entry["s_charge"] * month_days_dict[entry["month"]])*(1+entry["vat_pc"]/100), 2)
             
         # Calculate the total cost for all entries
         total_cost = sum(entry["cost"] for entry in json_results)
@@ -209,7 +214,6 @@ class dbDAO:
         print(json_results)
         self.closeAll()
         return json_results
-
 
 dbDAO = dbDAO()
 

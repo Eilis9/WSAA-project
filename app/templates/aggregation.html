@@ -22,10 +22,10 @@
     <p>From:</p>   
     <div class="row">
       <div class="col-3">
-          Year: <input type="number" id="year_begin" class="form-control" name="year_begin">
+          Year: <input type="number" id="year_start" class="form-control" name="year_start">
       </div>
       <div class="col-3">
-          Month: <input type="number" id="month_begin" class="form-control" name="month_begin">
+          Month: <input type="number" id="month_start" class="form-control" name="month_start">
       </div>
   </div><br/>
 
@@ -57,7 +57,55 @@ function goToWebviewer() {
   window.location.href = "/webviewer";
 }
 
+function getYearMonth() {
+    var reading = {}
+    reading.year_start = document.getElementById("year_start").value;
+    reading.month_start = document.getElementById("month_start").value;
+    reading.year_end = document.getElementById("year_end").value;
+    reading.month_end = document.getElementById("month_end").value;
+    console.log("in getYearMonth()", reading)
 
+    return reading
+}
+
+function doCalc(){
+            console.log("do Calc")
+            reading = getYearMonth()
+            console.log("in docalc()", reading)
+            calcCost(reading, function (result) {
+              
+            console.log("calc performed successfully:", result.total_cost);
+            document.getElementById("cost").value = result.total_cost;
+            
+        });
+        }
+
+
+
+function calcCost(reading){
+        console.log("in calcCost()");
+        $.ajax({
+            "url": "/elec/analysis/cost",
+            "method":"POST",
+            "data":JSON.stringify(reading),
+            "contentType": "application/json",
+            "dataType": "JSON",
+            "success":function(result){
+            document.getElementById("cost").value = result.total_cost; 
+            //console.log("cost: " + result.total_cost);
+            
+            //getElementbyId("cost").value = result.cost;
+            console.log("cost: "+result.total_cost); 
+            //for (reading of result){
+                //console.log(reading);                
+              //addReadingToTable(reading);
+              //}                   
+              },
+              "error":function(xhr,status,error){
+               console.log("error: "+status+" msg:"+error);
+                 }
+              });          
+              }
 
 
 
