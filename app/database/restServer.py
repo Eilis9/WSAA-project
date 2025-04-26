@@ -143,7 +143,7 @@ def update_unit(id):
     return jsonify(dbDAO.update_unit(id, reading)) 
 
 # update an entry based on id
-@app.route('/elec/<string:cost_code>', methods=['PUT'])
+@app.route('/elec/cost_codes/<string:cost_code>', methods=['PUT'])
 def update_costCode(cost_code):
     # read json from the body
     print("jsonstring in flask", request.json)
@@ -151,12 +151,13 @@ def update_costCode(cost_code):
     reading = {}
     print("reading in server", jsonstring)
     # Extract values from the jsonstring to put in correct order
+    reading['cost_code'] = jsonstring["cost_code"]
     reading["s_charge"] = jsonstring["s_charge"]
     reading["unit_cost"] = jsonstring["unit_cost"]
     reading["vat_pc"] = jsonstring["vat_pc"]
     reading["supplier"] = jsonstring["supplier"]
     print("flask", reading)
-    return jsonify(dbDAO.update_costCode(cost_code, reading)) 
+    return jsonify(dbDAO.update_costCode(reading)) 
 
 
 
@@ -188,6 +189,7 @@ def calcCost():
     print("server", reading)
     print("jsonstring in flask", request.json)
     result = dbDAO.calcCost(reading)
+    # Extract total cost from the returned json 
     for r in result:
         if 'total_cost' in r:
             total_cost = (r['total_cost'])

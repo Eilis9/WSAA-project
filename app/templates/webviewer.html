@@ -93,7 +93,10 @@
         </form> 
         <span><button type="button" class="btn btn-dark" id="button-doCreate" onclick="doCreate()">Create</button></span>
         <span><button type="button" class="btn btn-dark" id="button-doUpdate" onclick="doUpdate()">Update</button></span>
-        <!-- "display:none" will make it hidden-->
+        <div class="col-4">
+        <output id="successMessage" class="form-control text-success" style="display:none;"></output>
+        <output id="errorMessage" class="form-control text-error" style="display:none;"></output>
+        </div>
         </div>          
     </body>
 
@@ -174,12 +177,13 @@
             reading = getReadingFromForm()
             console.log(reading)
             createReading(reading, function (result) {
-            console.log("Reading created successfully:", result);
+   
+            //  console.log("Reading created successfully:", result);
+
             // Add the newly created reading to the table
-      
             // Clear the form and switch views
             clearForm();
-            showViewall();
+            //showViewall();
         });
         }
         
@@ -306,30 +310,38 @@
             function createReading(reading, callback){
             console.log(JSON.stringify(reading));
             $.ajax({
-                "url": "http://127.0.0.1:5000/elec",
+                "url": "/elec",
                 "method":"POST",
                 "data":JSON.stringify(reading),
                 "dataType": "JSON",
                 contentType: "application/json; charset=utf-8",
+                cache: false, 
                 "success":function(result){
                     console.log("the reading.id", result.id)
                     reading.id = result.id
                     addReadingToTable(reading);
                     // Needs to refresh to get the cost_code info from the database
                     getAllAjax();
-                    console.log(reading)
+                    document.getElementById("successMessage").style.display = "block"
+                    document.getElementById("errorMessage").style.display = "none"
+                    document.getElementById("successMessage").innerHTML = "Reading successfully created"
+                    console.log("insuccess", reading)
                     console.log(result);
                     callback(result)  
                 },
                 "error":function(xhr,status,error){
                     console.log("error: "+status+" msg:"+error);
+                    document.getElementById("errorMessage").style.display = "block"
+                    document.getElementById("successMessage").style.display = "none"
+                    document.getElementById("errorMessage").innerHTML = "Error creating reading: "+error
+                    callback({error:error})
                 }
             })};
           
 
             function deleteReading(id){
             $.ajax({
-                "url": "http://127.0.0.1:5000/elec/"+encodeURI(id),
+                "url": "elec/"+encodeURI(id),
                 "method":"DELETE",
                 "data":"",
                 "dataType": "JSON",
@@ -349,7 +361,7 @@
             console.log("reading id in updateReading", reading);
 
             $.ajax({
-                "url": "http://127.0.0.1:5000/elec/"+encodeURI(reading.id),
+                "url": "elec/"+encodeURI(reading.id),
                 "method":"PUT",
                 "data":JSON.stringify(reading),
                 "dataType": "JSON",

@@ -5,7 +5,14 @@ The big project for the WSAA module
 
 
 
-## How to run
+## How to run the app
+### Webviewer
+
+
+
+
+### API
+
 
 
 

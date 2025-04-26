@@ -32,16 +32,24 @@ class dbDAO:
 
 
     def create(self, reading):
+        # issue with the database freezing after failed attempt to insert record with wrong cost_code
+   
         cursor = self.getCursor()
+       
         sql = "INSERT INTO elec.unit (year, month, unit, cost_code) VALUES (%s, %s, %s, %s)"
         values = (reading.get("year"), reading.get("month"), reading.get("unit"), reading.get("cost_code"))
-        cursor.execute(sql, values)
-        self.connection.commit()
-        newid = cursor.lastrowid
-        reading["id"] = newid
-        self.closeAll()
-        return newid
-    
+        try:
+            cursor.execute(sql, values)
+            self.connection.commit()
+            newid = cursor.lastrowid
+            reading["id"] = newid
+            return newid
+        except Exception as e:
+            self.connection.rollback()  
+            raise e
+        finally:
+            self.closeAll()
+            
     # gets all units
     def getAll(self):
         cursor = self.getCursor()
@@ -143,7 +151,7 @@ class dbDAO:
     
 
     
-    def update_costCode(self, cost_code, reading):
+    def update_costCode(self, reading):
         
         cursor = self.getCursor()  # Get the database cursor
         

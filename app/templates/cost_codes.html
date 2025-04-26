@@ -320,7 +320,7 @@
      
           function updateReading(reading, callback){
             console.log("reading cost_code in updateReading", reading.cost_code);
-            console.log("reading id in updateReading", reading);
+            console.log("reading in updateReading", reading);
 
             $.ajax({
                 "url": "/elec/cost_codes/"+encodeURI(reading.cost_code),
@@ -329,7 +329,7 @@
                 "dataType": "JSON",
                 contentType: "application/json; charset=utf-8",
                 "success":function(result){
-                   // console.log(result);
+                    console.log("in ajax", result);
                     callback(result)   
                 },
                 "error":function(xhr,status,error){
