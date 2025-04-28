@@ -1,7 +1,7 @@
 from flask import Flask, url_for, request, redirect, abort, jsonify, render_template
 from daoClass import dbDAO
 from flask_cors import CORS
-
+from met_api import get_met
 app = Flask(__name__, static_url_path='', static_folder='staticpages', template_folder='../templates')
 
 CORS(app)
@@ -37,8 +37,10 @@ def chart_page():
     for result in results:
         labels.append(dict.get(result[1]))
         data.append(result[0])
+    # Get the met data for the current year
+    data_temp = []
 
-    return render_template('chart.html', labels=labels, data=data)
+    return render_template('chart.html', labels=labels, data=data, data_temp=data_temp)
 
 # Updates the chart page when the dropdown is changed
 @app.route('/chart_data/<int:year>')
@@ -99,6 +101,28 @@ def createCode():
     return jsonify(dbDAO.createCode(reading))
 
 
+# Get met data to send to the chart page
+@app.route('/met', methods=['GET'])
+def get_met_flask():
+    url = "https://prodapi.metweb.ie/monthly-data/Athenry"
+    
+    met_feature = request.args.get('feature', type=str)
+    year = request.args.get('year', type=str)
+    met_results = get_met(url, met_feature, year)
+    print("met_results", met_results)
+    print(met_feature, year)
+    labels = []
+    data = []
+    # To convert the met months to the label format for chart
+    month_dict = {'january':'Jan', 'february':'Feb', 'mar':'Mar', 'apr':'Apr', 'may':'May', 'june':'Jun',
+                  'july':'Jul', 'august':'Aug', 'september':'Sep', 'october':'Oct', 'november':'Nov', 'december':'Dec'}
+    data = []
+    
+    for month, value in met_results.items():
+        print(month, value)
+        labels.append(month_dict.get(month))
+        data.append(value)
+    return jsonify({'labels': labels, 'data': data})
 
 # find an entry based on year and month query parameters
 @app.route('/elec/find', methods=['GET'])

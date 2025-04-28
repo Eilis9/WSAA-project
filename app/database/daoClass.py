@@ -31,9 +31,10 @@ class dbDAO:
         self.connection.close()
 
 
+
     def create(self, reading):
         # issue with the database freezing after failed attempt to insert record with wrong cost_code
-   
+        # connection.rollback() used to rollback the transaction in case of error
         cursor = self.getCursor()
        
         sql = "INSERT INTO elec.unit (year, month, unit, cost_code) VALUES (%s, %s, %s, %s)"
@@ -136,18 +137,20 @@ class dbDAO:
         return results
 
 
-    def update_unit(self, id, reading):
-        
-        cursor = self.getCursor()  # Get the database cursor
-        
+    def update_unit(self, id, reading):        
+        cursor = self.getCursor()  # Get the database cursor   
         sql = "update elec.unit set year=%s, month=%s, unit=%s, cost_code=%s where id=%s"
         values = (reading.get("year"), reading.get("month"), reading.get("unit"), reading.get("cost_code"), id)
         print(f"Debug: SQL={sql}, values={values}")  # Debugging
-        
-        result = cursor.execute(sql, values)
-        self.connection.commit()
-        self.closeAll()
-        return result
+        try:        
+            result = cursor.execute(sql, values)
+            self.connection.commit()
+            return result
+        except Exception as e:
+            self.connection.rollback()  
+            raise e
+        finally:
+            self.closeAll()
     
 
     

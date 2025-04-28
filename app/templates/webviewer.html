@@ -96,6 +96,8 @@
         <div class="col-4">
         <output id="successMessage" class="form-control text-success" style="display:none;"></output>
         <output id="errorMessage" class="form-control text-error" style="display:none;"></output>
+        <output id="successMessageUpdate" class="form-control text-success" style="display:none;"></output>
+        <output id="errorMessageUpdate" class="form-control text-error" style="display:none;"></output>
         </div>
         </div>          
     </body>
@@ -193,7 +195,7 @@
             var rowElement = document.getElementById(reading.id)
             setReadingInRow(rowElement, reading)
             updateReading(reading)
-            showViewall()
+            //showViewall()
             clearForm() 
         }
 
@@ -368,10 +370,17 @@
                 contentType: "application/json; charset=utf-8",
                 "success":function(result){
                    // console.log(result);
+                    document.getElementById("successMessageUpdate").style.display = "block"
+                    document.getElementById("errorMessageUpdate").style.display = "none"
+                    document.getElementById("successMessageUpdate").innerHTML = "Reading successfully updated"
                     callback(result)   
                 },
                 "error":function(xhr,status,error){
                     console.log("error: "+status+" msg:"+error);
+                    document.getElementById("errorMessageUpdate").style.display = "block"
+                    document.getElementById("successMessageUpdate").style.display = "none"
+                    document.getElementById("errorMessageUpdate").innerHTML = "Error updating reading: "+error
+                    callback({error:error})
                 }
             });
         }

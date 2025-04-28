@@ -38,18 +38,30 @@
         const labels = JSON.parse('{{ labels | tojson | safe }}');
         const chartData = JSON.parse('{{ data | tojson | safe }}');
 
-        const data = {
+        const mixedChart = new Chart(ctx, {
+         data : {
             labels: labels,
             datasets: [{
+                type:'bar',
                 label: 'Unit Usage',
                 backgroundColor: 'rgb(255, 99, 132)',
                 borderColor: 'rgb(255, 99, 132)',
-                data: chartData,
-            }]
-        };
+                data: chartData1,
+            }, {
+                type:'line',
+                label: 'Temperature',
+                backgroundColor: 'rgb(54, 162, 235)',
+                borderColor: 'rgb(54, 162, 235)',
+                data: chartData2,
+            }
+        
+        
+        ]},
+        options: options
+        });
 
         const config = {
-            type: 'bar',
+            type: 'scatter',
             data: data,
             options: { maintainAspectRatio: false }
         };
@@ -71,8 +83,30 @@
             console.log("Data received:", response);
 
             // Update the chart with new data
+            mixedChart.data.labels = response.labels;
+            mixedChart.data.datasets[0].data = response.data;
+            mixedChart.update(); // Refresh the chart
+        },
+        error: function(xhr, status, error) {
+            console.error("Error fetching data:", status, error);
+            }
+           });
+        }
+
+
+        function updateChart2() {
+            const selectedYear = document.getElementById('yearDropdown').value;
+            console.log("Selected year:", selectedYear);
+          $.ajax({
+             url: "/met?feature=mean_temperature/"+encodeURI(selectedYear), 
+             method: "GET",
+             dataType: "JSON",
+             success: function(response) {
+            console.log("Data received:", response);
+
+            // Update the chart with new data
             myChart.data.labels = response.labels;
-            myChart.data.datasets[0].data = response.data;
+            myChart.data.datasets[1].data = response.data;
             myChart.update(); // Refresh the chart
         },
         error: function(xhr, status, error) {
@@ -80,6 +114,11 @@
             }
            });
         }
+
+
+
+
+
 
         function goToWebviewer() {
             window.location.href = "/webviewer";
