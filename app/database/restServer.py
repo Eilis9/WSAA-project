@@ -27,9 +27,10 @@ def costcodes():
 def analysis():
     return render_template('aggregation.html')
 
+
 # Plot the usage for current year (2025)
-@app.route('/chart')
-def chart_page():
+@app.route('/chart1')
+def chart_page2():
     results = dbDAO.findbyyear(int(2025))
     labels = []
     dict = {1:'Jan', 2:'Feb', 3:'Mar', 4:'Apr', 5:'May', 6:'Jun', 7:'Jul', 8:'Aug', 9:'Sep', 10:'Oct', 11:'Nov', 12:'Dec'}
@@ -40,7 +41,9 @@ def chart_page():
     # Get the met data for the current year
     data_temp = []
 
-    return render_template('chart.html', labels=labels, data=data, data_temp=data_temp)
+    return render_template('mixedchart.html', labels=labels, data=data)
+
+
 
 # Updates the chart page when the dropdown is changed
 @app.route('/chart_data/<int:year>')
@@ -117,12 +120,17 @@ def get_met_flask():
     month_dict = {'january':'Jan', 'february':'Feb', 'mar':'Mar', 'apr':'Apr', 'may':'May', 'june':'Jun',
                   'july':'Jul', 'august':'Aug', 'september':'Sep', 'october':'Oct', 'november':'Nov', 'december':'Dec'}
     data = []
+    if not met_results:   
+        labels=['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        data = [0,0,0,0,0,0,0,0,0,0,0,0] 
+    else:
+        for month, value in met_results.items():
+            print(month, value)
+            labels.append(month_dict.get(month))
+            data.append(value)
+    #    return jsonify({'labels': labels, 'data': data})
     
-    for month, value in met_results.items():
-        print(month, value)
-        labels.append(month_dict.get(month))
-        data.append(value)
-    return jsonify({'labels': labels, 'data': data})
+    return jsonify({'labels': labels,'data':data})
 
 # find an entry based on year and month query parameters
 @app.route('/elec/find', methods=['GET'])

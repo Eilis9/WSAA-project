@@ -24,9 +24,12 @@ def get_met(url, weather_var, year):
       data = response.json()
       # filter for the required data
       selected_data = data.get(weather_var, {}).get('report', {}).get(year, {})
-      del selected_data['annual']
+      # Check if ['annual'] is in data
+      #if 'annual' in selected_data:
+      #  del selected_data['annual']
   else:
       print(f"Failed to retrieve data. Status code: {response.status_code}")
+
 
  
   return selected_data

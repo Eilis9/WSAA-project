@@ -32,3 +32,6 @@ https://cpryan.github.io/blog/2023/tables/
 W3 Schools. Navbar [Online] Available: https://www.w3schools.com/bootstrap5/bootstrap_navbar.php
 
 Geeks for Geeks. Chart.js [Online] Available: https://www.geeksforgeeks.org/how-to-add-graphs-to-flask-apps/
+
+
+https://www.chartjs.org/docs/latest/samples/line/multi-axis.html
