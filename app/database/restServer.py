@@ -29,8 +29,8 @@ def analysis():
 
 
 # Plot the usage for current year (2025)
-@app.route('/chart1')
-def chart_page2():
+@app.route('/chart')
+def chart_page():
     results = dbDAO.findbyyear(int(2025))
     labels = []
     dict = {1:'Jan', 2:'Feb', 3:'Mar', 4:'Apr', 5:'May', 6:'Jun', 7:'Jul', 8:'Aug', 9:'Sep', 10:'Oct', 11:'Nov', 12:'Dec'}
@@ -39,9 +39,16 @@ def chart_page2():
         labels.append(dict.get(result[1]))
         data.append(result[0])
     # Get the met data for the current year
-    data_temp = []
+    year = '2025'
+    url="https://prodapi.metweb.ie/monthly-data/Athenry"
+    met_feature = "mean_temperature"
+    data_temp = get_met(url, met_feature, year)
+    print(data_temp)
+    print(data)
+    data_temp1 = list(data_temp.values())
+    print(data_temp1)
 
-    return render_template('mixedchart.html', labels=labels, data=data)
+    return render_template('mixedchart.html', labels=labels, data=data, data2=data_temp1)
 
 
 
@@ -50,9 +57,11 @@ def chart_page2():
 def chart_data(year, methods=['GET']):
     results = dbDAO.findbyyear(year)  # Fetch data for the selected year
     labels = []
+    data = []
+    
     month_dict = {1: 'Jan', 2: 'Feb', 3: 'Mar', 4: 'Apr', 5: 'May', 6: 'Jun',
                   7: 'Jul', 8: 'Aug', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dec'}
-    data = []
+    print(results)
 
     for result in results:
         labels.append(month_dict.get(result[1]))

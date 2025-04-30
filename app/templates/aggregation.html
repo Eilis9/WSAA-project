@@ -7,7 +7,7 @@
     </head>
     <body>
 
-
+      {% include 'navbar2.html' %}
 
     <div class="container pt-3" id="header">
         <h1>Cost</h1>
@@ -15,9 +15,7 @@
 
     <div class="container" id="createUpdateContainer">
       <!-- spans are like divs but do not go onto a new line -->
-      <span><button type="button" class="btn btn-dark" id="button-doCalc" onclick="doCalc()">Calculate</button></span>
 
-    <button type="button" class="btn btn-secondary" id="button-showViewall" onclick="goToWebviewer()">Back to view all</button><br/><br/>
     <p id="createInstruction">Fill in the form below to calculate cost (inclusive of begin and end months)</p>
     <p>From:</p>   
     <div class="row">
@@ -38,17 +36,18 @@
           Month: <input type="number" id="month_end" class="form-control" name="month_end">
       </div>
   </div>
+  <br>
+  <span><button type="button" class="btn btn-dark" id="button-doCalc" onclick="doCalc()">Calculate</button></span>
+
   <div class="row mt-3">
-    <div class="col-1">
-      Cost (euro:) 
+    <div class="col-2">
+      Cost of electricity (euro:) 
     </div>
-    <div class="col-1">
+    <div class="col-2">
       <output id="cost" class="form-control" name="cost" style="height: 100%;"></output>
     </div>  
 
-
-    
-    </div>          
+   </div>          
 </body>
 
 <script>

@@ -4,16 +4,18 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
     <title>Chart.js Usage</title>
 </head>
 
 <body>
+  {% include 'navbar2.html' %}
 
-  <div class="container pt-3"> <button onclick="goToWebviewer()" class="btn btn-primary">Back to Webviewer</button></div>
-
+  
   <div class="container pt-3">
     <label for="yearDropdown">Select Year:</label>
-    <select id="yearDropdown" onchange="updateChart(); updateChart2();">
+    <select id="yearDropdown" onchange="updateChart2(); updateChart();">
         <option value="2025">2025</option>
         <option value="2024">2024</option>
         <option value="2023">2023</option>
@@ -34,9 +36,11 @@
 
     <!-- Store Flask data as a JavaScript variable -->
     <script>
+        
+
         const labels = JSON.parse('{{ labels | tojson | safe }}');
         const chartData = JSON.parse('{{ data | tojson | safe }}');
-        const chartData2 = JSON.parse('{{ data | tojson | safe }}');
+        const chartData2 = JSON.parse('{{ data2 | tojson | safe }}');
 
         const data = {
             labels: labels,
@@ -81,11 +85,15 @@
         type: 'linear',
         display: true,
         position: 'left',
+        title: {display:true,
+                text:'Units (kWh)'},
       },
       y1: {
         type: 'linear',
         display: true,
         position: 'right',
+        title: {display:true,
+          text:'Temperature (deg C)'},
 
         // grid line settings
         grid: {
@@ -114,7 +122,7 @@
 
             // Update the chart with new data
             myChart.data.labels = response.labels;
-            myChart.data.datasets[0].data = response.data;
+            myChart.data.datasets[1].data = response.data;
             //myChart.data.datasets[1].data = response.data;
             myChart.update(); // Refresh the chart
         },
@@ -137,7 +145,7 @@
             // Update the chart with new data
             myChart.data.labels = response.labels;
            // myChart.data.datasets[0].data = response.data;
-            myChart.data.datasets[1].data = response.data;
+            myChart.data.datasets[0].data = response.data;
             myChart.update(); // Refresh the chart
         },
         error: function(xhr, status, error) {

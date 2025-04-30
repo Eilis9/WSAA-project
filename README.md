@@ -6,6 +6,10 @@ The big project for the WSAA module
 
 
 ## How to run the app
+
+### Database
+
+
 ### Webviewer
 
 
@@ -35,3 +39,5 @@ Geeks for Geeks. Chart.js [Online] Available: https://www.geeksforgeeks.org/how-
 
 
 https://www.chartjs.org/docs/latest/samples/line/multi-axis.html
+
+https://stackoverflow.com/questions/27910719/in-chart-js-set-chart-title-name-of-x-axis-and-y-axis
