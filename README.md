@@ -1,9 +1,5 @@
 # WSAA-project
-The big project for the WSAA module
-
-### Contents
-
-
+The project for the Web Services and Applications module 
 
 ## How to run the app
 
