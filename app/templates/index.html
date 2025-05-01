@@ -14,18 +14,21 @@
 <div class="container pt-5">
 
   <h1>Electricity Monitoring App</h1>
-  <p>The webviewer allows you to view and create, modify and delete electricity readings and cost codes. 
-    Cost codes are used to calculate the cost of electricity.
-  </p>
-  <p>View / add / delete / modify the electricity readings here: </p>
+  <p>The webviewer allows you to view and create, modify and delete electricity readings and cost codes.   </p>
+  <p>  Cost codes are used to calculate the cost of electricity. </p>
+  <p>  A plot is used to visualise the electricity use for each calendar year along with mean temperature data.
+    The monthly mean temperature data at the Athenry weather station is obtained from the Met Eireann API: <a href="https://prodapi.metweb.ie/monthly-data/Athenry">https://prodapi.metweb.ie/monthly-data/Athenry</a></p>
+    
+  <p>The data may be viewed, created and modified in the webviewer: </p>
   <a href="/webviewer" class="btn btn-primary" id="button-showWebviewer">Launch Webviewer</a>
 </div>
 
 <div class="container pt-5">
   <h2>Using the API</h2>
-  <p>To use the AP to get json data, you can make GET requests to the following endpoints:</p>
+  <p>To use the API to get json data, you can make GET requests to the following endpoints:</p>
   <ul>
     <li><a href="/elec/units">Get all readings</a></li>
+    <li><a href="/elec/find/?year=2025&month=1 "> Gets a reading corresponding to a given year and month</a></li>
     <li><a href="/elec/cost_codes">Get all cost codes</a></li>
 
 </div>
