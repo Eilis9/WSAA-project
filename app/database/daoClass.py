@@ -55,7 +55,6 @@ class dbDAO:
         
         return results
 
-
     def create(self, reading):
         # issue with the database freezing after failed attempt to insert record with wrong cost_code
         # connection.rollback() used to rollback the transaction in case of error
@@ -180,24 +179,40 @@ class dbDAO:
         return results
 
 
-    def update_unit(self, id, reading):        
-        cursor = self.getCursor()  # Get the database cursor   
-        sql = "update elec.unit set year=%s, month=%s, unit=%s, cost_code=%s where id=%s"
-        values = (reading.get("year"), reading.get("month"), reading.get("unit"), reading.get("cost_code"), id)
-        print(f"Debug: SQL={sql}, values={values}")  # Debugging
+    def update_unit(self, id, reading):
+     
+        error_check = []
+        month_year_check = []   
+        # Check if year and month data is valid
+        month_year_check = self.validate_date(reading.get("year"), reading.get("month"))
+        error_check = self.check_if_existing(reading.get("year"), reading.get("month"))
 
-        
-
-
-        try:        
-            result = cursor.execute(sql, values)
-            self.connection.commit()
-            return result
-        except Exception as e:
-            self.connection.rollback()  
-            raise e
-        finally:
-            self.closeAll()
+        if len(month_year_check) > 0:
+            return ({"message": "Enter valid year (YYYY) and month"}), 400        
+        # check if the unit input is a positive number
+        elif reading.get("unit").isdigit() is False or int(reading.get("unit")) < 0:
+            return ({"message": "Enter valid unit"}), 400
+        # Check if the reading already exists in database
+        elif len(error_check) > 0:
+            return ({"message": "Reading for that year and month already exists"}), 400
+        else:
+            try:        
+                cursor = self.getCursor()  # Get the database cursor   
+                sql = "update elec.unit set year=%s, month=%s, unit=%s, cost_code=%s where id=%s"
+                values = (reading.get("year"), reading.get("month"), reading.get("unit"), reading.get("cost_code"), id)
+                cursor.execute(sql, values)
+                self.connection.commit()
+                # Check if any rows were updated
+                if cursor.rowcount == 0:
+                    return ({"message": "No rows updated"}), 400
+                else:
+                    return ({"message": "Reading successfully updated"}), 200
+            except Exception as e:
+                # undo the changes made if there's an error
+                self.connection.rollback()  
+                raise e
+            finally:
+                self.closeAll()
     
 
     

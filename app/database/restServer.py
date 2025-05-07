@@ -36,17 +36,20 @@ def chart_page():
     dict = {1:'Jan', 2:'Feb', 3:'Mar', 4:'Apr', 5:'May', 6:'Jun', 7:'Jul', 8:'Aug', 9:'Sep', 10:'Oct', 11:'Nov', 12:'Dec'}
     data = []
     for result in results:
-        labels.append(dict.get(result[1]))
+    #   labels.append(dict.get(result[1]))
         data.append(result[0])
+    # pad out the data to 12 months
+    pad = [''] * (12 - len(data))
+    data = data + pad
+    # return all labels so that the full year is shown on the chart
+    labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
     # Get the met data for the current year
     year = '2025'
     url="https://prodapi.metweb.ie/monthly-data/Athenry"
     met_feature = "mean_temperature"
     data_temp = get_met(url, met_feature, year)
-    print(data_temp)
-    print(data)
     data_temp1 = list(data_temp.values())
-    print(data_temp1)
 
     return render_template('mixedchart.html', labels=labels, data=data, data2=data_temp1)
 
@@ -108,11 +111,7 @@ def createCode():
     reading["unit_cost"] = jsonstring["unit_cost"]
     reading["vat_pc"] = jsonstring["vat_pc"]
     reading["supplier"] = jsonstring["supplier"]
-    
-    print("server", request.json)
     result = dbDAO.createCode(reading)
-    print("what createcode returns", result)
-
     return result
 
 

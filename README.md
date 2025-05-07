@@ -1,14 +1,29 @@
 # WSAA-project
-The project for the Web Services and Applications module 
+The project undertaken for the Web Services and Applications module as part of the HDip in Computing in Data Analytics (ATU).
 
-## How to run the app
+## Project Description
+The project is a web application that allows users to create/update/delete electricity readings and cost codes related to the price of electricity. Data is stored in a MySQL database. The application is built using Flask, and utilizes Bootstrap for styling and Chart.js for data visualisation.  
 
-### Database
+
+
+
+
+
+### MySQL Database
+
+The database comprises two tables:
+1. Unit
+2. Cost
+
+The database schema is represented here:
+
+<img src="app\img\database_schema.PNG" alt="Database Schema" width="600"/>
 
 
 ### Webviewer
 
 
+### How to run the app
 
 
 ### API
