@@ -291,18 +291,29 @@
                 "dataType": "JSON",
                 contentType: "application/json; charset=utf-8",
                 cache: false, 
-                "success":function(result){
-                    console.log("the reading.id", result.id)
-                    reading.id = result.id
-                    addReadingToTable(reading);
-                    // Needs to refresh to get the cost_code info from the database
-                    getAllAjax();
-                    document.getElementById("successMessage").style.display = "block"
-                    document.getElementById("errorMessage").style.display = "none"
-                    document.getElementById("successMessage").innerHTML = "Reading successfully created"
-                    console.log("insuccess", reading)
-                    console.log(result);
-                    callback(result)  
+                "success": function(result) {
+                // Check if the server returned an error message
+                        console.log("result", result);
+                        console.log("the reading.id", result[0].id);
+                        console.log("Message: " + result[0].message);
+                        console.log("code: " + result[1]);
+                        if (result[1] == "400") {
+                            document.getElementById("errorMessage").style.display = "block";
+                            document.getElementById("successMessage").style.display = "none";
+                            document.getElementById("errorMessage").innerHTML = result[0].message;
+                            callback({ error: result.message });
+
+                        } else {
+                            reading.id = result.id
+                            addReadingToTable(reading);
+                            // Needs to refresh to get the cost_code info from the database
+                            getAllAjax();
+                            document.getElementById("successMessage").style.display = "block"
+                            document.getElementById("errorMessage").style.display = "none"
+                            document.getElementById("successMessage").innerHTML = "Reading successfully created"
+                            callback(result);
+                        }
+                     
                 },
                 "error":function(xhr,status,error){
                     console.log("error: "+status+" msg:"+error);

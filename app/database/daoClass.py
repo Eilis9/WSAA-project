@@ -30,27 +30,70 @@ class dbDAO:
         self.cursor.close()
         self.connection.close()
 
+    def check_if_existing(self, year, month):
+        results = []
+        cursor = self.getCursor()
+        sql = "SELECT * FROM elec.unit WHERE year = %s AND month = %s"
+     
+        try:
+            cursor.execute(sql, (year, month))
+            results = cursor.fetchall()
+            return results
+        except:        
+            raise Exception("Error in query")
+        finally:
+            self.closeAll()
+
+    # Function to valid inputted year and month
+    def validate_date(self, year, month):
+        results = []
+        if month.isdigit() is False or int(month) > 12 or int(month)<1:
+            results.append("Month invalid")
+        
+        if year.isdigit() is False or len(year) < 4:
+            results.append("Year invalid")
+        
+        return results
 
 
     def create(self, reading):
         # issue with the database freezing after failed attempt to insert record with wrong cost_code
         # connection.rollback() used to rollback the transaction in case of error
-        cursor = self.getCursor()
-       
-        sql = "INSERT INTO elec.unit (year, month, unit, cost_code) VALUES (%s, %s, %s, %s)"
-        values = (reading.get("year"), reading.get("month"), reading.get("unit"), reading.get("cost_code"))
-        try:
-            cursor.execute(sql, values)
-            self.connection.commit()
-            newid = cursor.lastrowid
-            reading["id"] = newid
-            return newid
-        except Exception as e:
-            self.connection.rollback()  
-            raise e
-        finally:
-            self.closeAll()
-            
+        error_check = []
+        month_year_check = []
+
+        # Check if the reading being inputted already exists in database
+        error_check = self.check_if_existing(reading.get("year"), reading.get("month"))
+
+        # Check if year and month data is valid
+        month_year_check = self.validate_date(reading.get("year"), reading.get("month"))
+ 
+        if len(month_year_check) > 0:
+            return ({"message": "Enter valid year (YYYY) and month"}), 400
+
+        elif len(error_check) > 0:
+            print("Error caught")
+            return ({"message": "Reading for that year and month already exists"}), 400      
+
+        else:
+            try:
+                sql = "INSERT INTO elec.unit (year, month, unit, cost_code) VALUES (%s, %s, %s, %s)"
+                values = (reading.get("year"), reading.get("month"), reading.get("unit"), reading.get("cost_code"))
+                cursor = self.getCursor()
+                cursor.execute(sql, values)
+                self.connection.commit()
+                newid = cursor.lastrowid
+                reading["id"] = newid
+                self.closeAll()
+                return ({"message": "Reading successfully created", "id": newid}), 200
+            except Exception as e:
+                self.connection.rollback() 
+                self.closeAll() 
+                raise e
+            finally:
+                self.closeAll()
+
+
     # gets all units
     def getAll(self):
         cursor = self.getCursor()
@@ -142,6 +185,10 @@ class dbDAO:
         sql = "update elec.unit set year=%s, month=%s, unit=%s, cost_code=%s where id=%s"
         values = (reading.get("year"), reading.get("month"), reading.get("unit"), reading.get("cost_code"), id)
         print(f"Debug: SQL={sql}, values={values}")  # Debugging
+
+        
+
+
         try:        
             result = cursor.execute(sql, values)
             self.connection.commit()

@@ -110,7 +110,10 @@ def createCode():
     reading["supplier"] = jsonstring["supplier"]
     
     print("server", request.json)
-    return jsonify(dbDAO.createCode(reading))
+    result = dbDAO.createCode(reading)
+    print("what createcode returns", result)
+
+    return result
 
 
 # Get met data to send to the chart page
@@ -163,10 +166,11 @@ def create():
     reading["unit"] = jsonstring["unit"]
     reading["cost_code"] = jsonstring["cost_code"]
     print("server", request.json)
+
     return jsonify(dbDAO.create(reading))
 
 
-# update an entry based on id
+# update an reading based on id
 @app.route('/elec/<int:id>', methods=['PUT'])
 def update_unit(id):
     # read json from the body
@@ -183,7 +187,7 @@ def update_unit(id):
     print("flask", reading)
     return jsonify(dbDAO.update_unit(id, reading)) 
 
-# update an entry based on id
+# update a cost code based on id
 @app.route('/elec/cost_codes/<string:cost_code>', methods=['PUT'])
 def update_costCode(cost_code):
     # read json from the body
