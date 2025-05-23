@@ -184,17 +184,17 @@ class dbDAO:
         error_check = []
         month_year_check = []   
         # Check if year and month data is valid
-        month_year_check = self.validate_date(reading.get("year"), reading.get("month"))
-        error_check = self.check_if_existing(reading.get("year"), reading.get("month"))
+        #month_year_check = self.validate_date(reading.get("year"), reading.get("month"))
+        #error_check = self.check_if_existing(reading.get("year"), reading.get("month"))
 
-        if len(month_year_check) > 0:
-            return ({"message": "Enter valid year (YYYY) and month"}), 400        
+        #if len(month_year_check) > 0:
+        #    return ({"message": "Enter valid year (YYYY) and month"}), 400        
         # check if the unit input is a positive number
-        elif reading.get("unit").isdigit() is False or int(reading.get("unit")) < 0:
+        if reading.get("unit").isdigit() is False or int(reading.get("unit")) < 0:
             return ({"message": "Enter valid unit"}), 400
         # Check if the reading already exists in database
-        elif len(error_check) > 0:
-            return ({"message": "Reading for that year and month already exists"}), 400
+        #elif len(error_check) > 0:
+        #    return ({"message": "Reading for that year and month already exists"}), 400
         else:
             try:        
                 cursor = self.getCursor()  # Get the database cursor   

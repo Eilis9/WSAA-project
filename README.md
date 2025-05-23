@@ -59,6 +59,7 @@ The CRUD endpoints are available:
 | `/elec`          | POST   | Create a new reading (JSON object containing 'year', 'month', 'units', 'cost_code') |
 | `/elec/<int:id>`     | PUT    | Update a reading (JSON object containing 'id', 'year', 'month', 'units', 'cost_code') |
 | `/elec/<int:id>`     | DELETE | Delete a reading                   |
+| `/elec/find`     | GET | Find a reading by year and month (Query parameters: 'year', 'month') |
 | `/elec/cost_codes` | GET  | Get all cost codes                 |
 | `/elec/cost_codes` | POST | Create a new cost code (JSON object containing 'cost_code', 's_charge', 'unit_cost', 'vat_pc', 'supplier')      |      |
 | `/elec/cost_codes/<string:cost_code>` | PUT | Update a cost code based on id (JSON object containing 'id', 'cost_code', 's_charge', 'unit_cost', 'vat_pc', 'supplier')      |
@@ -124,3 +125,5 @@ python app/database/restServer.py
 - Chart js. Multiple axes [Online] Available: https://www.chartjs.org/docs/latest/samples/line/multi-axis.html
 
 - Stack Overflow. Setting chart title and axes [Online] Available: https://stackoverflow.com/questions/27910719/in-chart-js-set-chart-title-name-of-x-axis-and-y-axis
+
+- W3 Schools. HTML Character Entities [Online] Available: https://www.w3schools.com/html/html_entities
