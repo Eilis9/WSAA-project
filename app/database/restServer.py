@@ -79,7 +79,7 @@ def chart_data(year, methods=['GET']):
 def getall():
     #table = 'unit'
     results = dbDAO.getAll()
-    print("flask", results)
+    #print("flask", results)
     return jsonify(results)
 
 # Gets the data when the webviewer page is loaded
@@ -87,7 +87,7 @@ def getall():
 def getallAjax():
     #table = 'unit'
     results = dbDAO.getAll()
-    print("webviewer", results)
+    #print("webviewer", results)
     return jsonify(results)
 
 # Get all entries in the cost code table
@@ -95,7 +95,7 @@ def getallAjax():
 def getAllCode():
     #table = 'unit'
     results = dbDAO.getAllCostCode()
-    print("flask", results)
+    #print("flask", results)
     return jsonify(results)
 
 #create a cost code
@@ -123,8 +123,8 @@ def get_met_flask():
     met_feature = request.args.get('feature', type=str)
     year = request.args.get('year', type=str)
     met_results = get_met(url, met_feature, year)
-    print("met_results", met_results)
-    print(met_feature, year)
+    #print("met_results", met_results)
+    #print(met_feature, year)
     labels = []
     data = []
     # To convert the met months to the label format for chart
@@ -136,7 +136,7 @@ def get_met_flask():
         data = [0,0,0,0,0,0,0,0,0,0,0,0] 
     else:
         for month, value in met_results.items():
-            print(month, value)
+            #print(month, value)
             labels.append(month_dict.get(month))
             data.append(value)
     #    return jsonify({'labels': labels, 'data': data})
@@ -148,8 +148,8 @@ def get_met_flask():
 def findbyid():
     year = request.args.get('year', type=int)  
     month = request.args.get('month', type=int)  
-    print(f"Debug: year={year}, type={type(year)}")
-    print(f"Debug: month={month}, type={type(month)}")
+    #print(f"Debug: year={year}, type={type(year)}")
+    #print(f"Debug: month={month}, type={type(month)}")
     results = dbDAO.findbyid(year, month)
     return results
 
@@ -164,7 +164,7 @@ def create():
     reading["month"] = jsonstring["month"]
     reading["unit"] = jsonstring["unit"]
     reading["cost_code"] = jsonstring["cost_code"]
-    print("server", request.json)
+    #print("server", request.json)
 
     return jsonify(dbDAO.create(reading))
 
@@ -173,34 +173,34 @@ def create():
 @app.route('/elec/<int:id>', methods=['PUT'])
 def update_unit(id):
     # read json from the body
-    print("jsonstring in flask", request.json)
+    #print("jsonstring in flask", request.json)
     jsonstring = request.json
     reading = {}
-    print("reading in server", jsonstring)
+    #print("reading in server", jsonstring)
     # Extract values from the jsonstring to put in correct order
     reading['id'] = id
     reading["year"] = jsonstring["year"]
     reading["month"] = jsonstring["month"]
     reading["unit"] = jsonstring["unit"]
     reading["cost_code"] = jsonstring["cost_code"]
-    print("flask", reading)
+    #print("flask", reading)
     return jsonify(dbDAO.update_unit(id, reading)) 
 
 # update a cost code based on id
 @app.route('/elec/cost_codes/<string:cost_code>', methods=['PUT'])
 def update_costCode(cost_code):
     # read json from the body
-    print("jsonstring in flask", request.json)
+    #print("jsonstring in flask", request.json)
     jsonstring = request.json
     reading = {}
-    print("reading in server", jsonstring)
+    #print("reading in server", jsonstring)
     # Extract values from the jsonstring to put in correct order
     reading['cost_code'] = jsonstring["cost_code"]
     reading["s_charge"] = jsonstring["s_charge"]
     reading["unit_cost"] = jsonstring["unit_cost"]
     reading["vat_pc"] = jsonstring["vat_pc"]
     reading["supplier"] = jsonstring["supplier"]
-    print("flask", reading)
+    #print("flask", reading)
     return jsonify(dbDAO.update_costCode(reading)) 
 
 
@@ -222,7 +222,7 @@ def deleteCostCode(cost_code):
 def calcCost():
     # read json from the body
     jsonstring = request.json
-    print("jsonstr", jsonstring)
+    #print("jsonstr", jsonstring)
     reading = {}
     #TODO : put in conditions here based on blanks
     reading["year_start"] = jsonstring["year_start"]
@@ -230,8 +230,8 @@ def calcCost():
     reading["year_end"] = jsonstring["year_end"]
     reading["month_end"] = jsonstring["month_end"]
     
-    print("server", reading)
-    print("jsonstring in flask", request.json)
+    #print("server", reading)
+    #print("jsonstring in flask", request.json)
     result = dbDAO.calcCost(reading)
     # Extract total cost from the returned json 
     for r in result:
